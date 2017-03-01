@@ -5,10 +5,22 @@ define([
 ) {
     function check_extension() {
 
+    	
+
         var handler = function () {
             //alert('this is an alert from my new extension!');
+/*
             Jupyter.notebook.copy_cell();
 			Jupyter.notebook.paste_cell_below();
+*/			Jupyter.notebook.scroll_to_bottom();
+			var n = Jupyter.notebook.ncells();
+			Jupyter.notebook.insert_cell_at_index('markdown',n-1);
+			
+			Jupyter.notebook.select(n-1,true);
+			var cell = Jupyter.notebook.get_selected_cell();
+			cell.set_text("nuevo contenido");
+			//console.log(Jupyter.notebook.get_selected_cell().code_mirror.display.lineDiv.textContent);
+			Jupyter.notebook.execute_cell();
 
         };
 
