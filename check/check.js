@@ -12,7 +12,10 @@ define([
 /*
             Jupyter.notebook.copy_cell();
 			Jupyter.notebook.paste_cell_below();
-*/			Jupyter.notebook.scroll_to_bottom();
+*/	
+
+/*
+			Jupyter.notebook.scroll_to_bottom();
 			var n = Jupyter.notebook.ncells();
 			Jupyter.notebook.insert_cell_at_index('markdown',n-1);
 			
@@ -20,7 +23,20 @@ define([
 			var cell = Jupyter.notebook.get_selected_cell();
 			cell.set_text("nuevo contenido");
 			//console.log(Jupyter.notebook.get_selected_cell().code_mirror.display.lineDiv.textContent);
+			Jupyter.notebook.execute_cell();*/
+
+
+
+			var cell = Jupyter.notebook.get_selected_cell();
+			var text = cell.get_text();
+			console.log(text);
+			var index = Jupyter.notebook.get_selected_index();
+			Jupyter.notebook.insert_cell_below('code');
+			Jupyter.notebook.select(index+1,true);
+			var new_cell = Jupyter.notebook.get_selected_cell();
+			new_cell.set_text("%%bash \n for i in {1..5}; do echo " + text + "; done");
 			Jupyter.notebook.execute_cell();
+
 
         };
 
