@@ -26,10 +26,18 @@ define([
 			Jupyter.notebook.execute_cell();*/
 
 
-
+            // Texto introducido por el alumno
 			var cell = Jupyter.notebook.get_selected_cell();
 			var text = cell.get_text();
 			console.log(text);
+
+            /*  armar el json con el nombre, el ejercicio y el texto introducido por el alumno
+            *   hacer el POST a /localhost:80/corrector usando $post() --ver ajax--
+            *   recibir la respuesta del servidor
+            *   procesar la respuesta del servidor
+            *   generar una nueva celda mostrando la corrección del servidor --aprovechar params de $post()-- */
+
+
 			var index = Jupyter.notebook.get_selected_index();
 			Jupyter.notebook.insert_cell_below('code');
 			Jupyter.notebook.select(index+1,true);
