@@ -26,11 +26,6 @@ define([
 			Jupyter.notebook.execute_cell();*/
 
 
-            // Texto introducido por el alumno
-			var cell = Jupyter.notebook.get_selected_cell();
-			var text = cell.get_text();
-			console.log(text);
-
             /*  armar el json con el nombre, el ejercicio y el texto introducido por el alumno
             *   hacer el POST a /localhost:80/corrector usando $post() --ver ajax--
             *   recibir la respuesta del servidor
@@ -38,12 +33,48 @@ define([
             *   generar una nueva celda mostrando la corrección del servidor --aprovechar params de $post()-- */
 
 
-			var index = Jupyter.notebook.get_selected_index();
-			Jupyter.notebook.insert_cell_below('code');
-			Jupyter.notebook.select(index+1,true);
-			var new_cell = Jupyter.notebook.get_selected_cell();
-			new_cell.set_text("%%bash \n for i in {1..5}; do echo " + text + "; done");
-			Jupyter.notebook.execute_cell();
+            // Nombre del alumno ---- hardcodeado por ahora
+            var nombre = "pepe";
+
+            // Número de ejercicio ---- hardcodeado por ahora
+            var ejercicio = "1";
+
+            // Texto introducido por el alumno
+			var cell = Jupyter.notebook.get_selected_cell();
+			var text = cell.get_text();
+			//console.log(text);
+
+            // Json con todo para el request
+            var datos = {
+                            "nombre" : nombre,
+                            "ejercicio" : ejercicio,
+                            "respuesta" : text
+                        }
+
+            // $.post("http://localhost:80/corrector/",
+            //         datos,
+            //         function(json){
+            //             console.log(json);
+            //         },
+            //         "json");
+
+            $.ajax({
+                url: "http://localhost:80/corrector/",
+                type: 'post',
+                data: datos,
+                headers: { "Content-Type": "application/json" },
+                dataType: 'json',
+                success: function(json){
+                            console.log(json);
+                        }
+            });
+
+			// var index = Jupyter.notebook.get_selected_index();
+			// Jupyter.notebook.insert_cell_below('code');
+			// Jupyter.notebook.select(index+1,true);
+			// var new_cell = Jupyter.notebook.get_selected_cell();
+			// new_cell.set_text("%%bash \n for i in {1..5}; do echo " + text + "; done");
+			// Jupyter.notebook.execute_cell();
 
 
         };

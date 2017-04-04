@@ -9,25 +9,27 @@ import json
 class CorrectorHandler(tornado.web.RequestHandler):
     def prepare(self):
         if self.request.headers["Content-Type"].startswith("application/json"):
+            print('if')
             self.json_args = json.loads(self.request.body)
         else:
+            print('else')
             self.json_args = None
 
     def post(self):
-        print "Guardando datos"
+        print ("Guardando datos")
         nombre = self.json_args["nombre"]
         ejercicio = self.json_args["ejercicio"]
         respuesta = self.json_args["respuesta"]
         _execute("INSERT INTO resultados (nombre,ejercicio,respuesta) VALUES ('{0}','{1}','{2}')".format(nombre,ejercicio,respuesta))
 
-        print "Evaluando respuesta"
+        print ("Evaluando respuesta")
         if respuesta == "1":
             correccion = {"aprobo":True}
         else:
             correccion = {"aprobo":False}
         self.write(correccion)   
 
-        print "Listo"
+        print ("Listo")
 
 
 class Application(tornado.web.Application):
