@@ -7,19 +7,27 @@ import json
 
 
 class CorrectorHandler(tornado.web.RequestHandler):
-    def prepare(self):
-        if self.request.headers["Content-Type"].startswith("application/json"):
-            print('if')
-            self.json_args = json.loads(self.request.body)
-        else:
-            print('else')
-            self.json_args = None
+    # def prepare(self):
+    #     if self.request.headers["Content-Type"].startswith("application/json"):
+    #         print('if')
+    #         self.json_args = json.loads(self.request.body)
+    #     else:
+    #         print('else')
+    #         self.json_args = None
 
     def post(self):
+        print ("Obteniendo datos")
+        #print (self.request.body)
+        nombre = self.get_argument("nombre")
+        ejercicio = self.get_argument("ejercicio")
+        respuesta = self.get_argument("respuesta")
+        #print (nombre + ejercicio + respuesta)
+        # data = tornado.escape.json_decode(self.request.body)
+        # nombre = data["nombre"]
+        # ejercicio = data["ejercicio"]
+        # respuesta = data["respuesta"]
+
         print ("Guardando datos")
-        nombre = self.json_args["nombre"]
-        ejercicio = self.json_args["ejercicio"]
-        respuesta = self.json_args["respuesta"]
         _execute("INSERT INTO resultados (nombre,ejercicio,respuesta) VALUES ('{0}','{1}','{2}')".format(nombre,ejercicio,respuesta))
 
         print ("Evaluando respuesta")
@@ -27,6 +35,9 @@ class CorrectorHandler(tornado.web.RequestHandler):
             correccion = {"aprobo":True}
         else:
             correccion = {"aprobo":False}
+
+        # por cross-domain
+        self.add_header("Access-Control-Allow-Origin","http://localhost:8888")
         self.write(correccion)   
 
         print ("Listo")

@@ -62,10 +62,21 @@ define([
                 url: "http://localhost:80/corrector/",
                 type: 'post',
                 data: datos,
-                headers: { "Content-Type": "application/json" },
+                //contentType: "application/json", // The 'contentType' property sets the 'Content-Type' header.
+//                headers: { "Content-Type": "application/json" },
                 dataType: 'json',
                 success: function(json){
                             console.log(json);
+                            var index = Jupyter.notebook.get_selected_index();
+                            Jupyter.notebook.insert_cell_below('raw');
+                            Jupyter.notebook.select(index+1,true);
+                            var new_cell = Jupyter.notebook.get_selected_cell();
+                            if (json["aprobo"]) {
+                                new_cell.set_text("Respondiste bien");
+                            } else {
+                                new_cell.set_text("Respondiste mal");
+                            }
+                            
                         }
             });
 
