@@ -1,11 +1,12 @@
 define([
-    'base/js/namespace'
+    'base/js/namespace',
+    'base/js/utils'
 ], function(
-    Jupyter
+    Jupyter, utils
 ) {
     function check_extension() {
 
-    	
+    	//var that = this;
 
         var handler = function () {
             //alert('this is an alert from my new extension!');
@@ -25,7 +26,7 @@ define([
 			//console.log(Jupyter.notebook.get_selected_cell().code_mirror.display.lineDiv.textContent);
 			Jupyter.notebook.execute_cell();*/
 
-
+/****************************************************************************************************************
             /*  armar el json con el nombre, el ejercicio y el texto introducido por el alumno
             *   hacer el POST a /localhost:80/corrector usando $post() --ver ajax--
             *   recibir la respuesta del servidor
@@ -33,16 +34,16 @@ define([
             *   generar una nueva celda mostrando la corrección del servidor --aprovechar params de $post()-- */
 
 
-            // Nombre del alumno ---- hardcodeado por ahora
+/*            // Nombre del alumno ---- hardcodeado por ahora
             var nombre = "pepe";
 
             // Número de ejercicio ---- hardcodeado por ahora
             var ejercicio = "1";
 
             // Texto introducido por el alumno
-			var cell = Jupyter.notebook.get_selected_cell();
-			var text = cell.get_text();
-			//console.log(text);
+            var cell = Jupyter.notebook.get_selected_cell();
+            var text = cell.get_text();
+            //console.log(text);
 
             // Json con todo para el request
             var datos = {
@@ -79,6 +80,52 @@ define([
                             
                         }
             });
+*/
+/****************************************************************************************************************/
+            
+            // Nombre del alumno ---- hardcodeado por ahora
+            var nombre = "pepe";
+
+            // Número de ejercicio ---- hardcodeado por ahora
+            var ejercicio = "1";
+
+            // Texto introducido por el alumno
+            var cell = Jupyter.notebook.get_selected_cell();
+            var text = cell.get_text();
+            //console.log(text);
+
+            // Json con todo para el request
+            var datos = {
+                            "nombre" : nombre,
+                            "ejercicio" : ejercicio,
+                            "respuesta" : text
+                        };
+
+            //var dir = utils.url_path_join(that.base_url,'corrector');
+            //console.log(dir);
+
+            $.ajax({
+                url: "localhost:8888/corrector",
+                type: 'post',
+                data: datos,
+                //contentType: "application/json", // The 'contentType' property sets the 'Content-Type' header.
+//                headers: { "Content-Type": "application/json" },
+                dataType: 'json',
+                success: function(json){
+                            console.log(json);
+                            var index = Jupyter.notebook.get_selected_index();
+                            Jupyter.notebook.insert_cell_below('raw');
+                            Jupyter.notebook.select(index+1,true);
+                            var new_cell = Jupyter.notebook.get_selected_cell();
+                            if (json["aprobo"]) {
+                                new_cell.set_text("Respondiste bien");
+                            } else {
+                                new_cell.set_text("Respondiste mal");
+                            }
+                            
+                        }
+            });
+
 
 			// var index = Jupyter.notebook.get_selected_index();
 			// Jupyter.notebook.insert_cell_below('code');
