@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='corrector',
-      version='0.9.1',
+      version='0.9.2',
       description='corrector POC parte 1 opc B',
       #url='http://github.com/storborg/funniest',
       author='Gisela',

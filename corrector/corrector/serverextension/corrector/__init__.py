@@ -51,7 +51,7 @@ def load_jupyter_server_extension(nb_server_app):
         nb_server_app (NotebookWebApplication): handle to the Notebook webserver instance.
     """
     web_app = nb_server_app.web_app
-    nb_server_app.log.info("Loading the Corrector serverextension sarasa " + web_app.settings['base_url'])
+    nb_server_app.log.info("Loading the Corrector serverextension")
     
     host_pattern = '.*$'
     route_pattern = url_path_join(web_app.settings['base_url'], 'corrector')

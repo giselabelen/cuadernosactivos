@@ -82,7 +82,13 @@ define([
             });
 */
 /****************************************************************************************************************/
-            
+            var ajax = utils.ajax || $.ajax;
+
+            var base_url = utils.get_body_data("baseUrl");
+            //console.log(base_url);
+            var url = utils.url_path_join(base_url,'corrector');
+
+
             // Nombre del alumno ---- hardcodeado por ahora
             var nombre = "pepe";
 
@@ -95,16 +101,40 @@ define([
             //console.log(text);
 
             // Json con todo para el request
-            var datos = {
+           /* var datos = {
                             "nombre" : nombre,
                             "ejercicio" : ejercicio,
                             "respuesta" : text
-                        };
+                        };*/
+
+
+            var settings = {
+                data : {
+                    "nombre" : nombre,
+                    "ejercicio" : ejercicio,
+                    "respuesta" : text
+                },
+                type : 'POST',
+                dataType: 'json',
+                success: function(json){
+                            console.log(json);
+                            var index = Jupyter.notebook.get_selected_index();
+                            Jupyter.notebook.insert_cell_below('raw');
+                            Jupyter.notebook.select(index+1,true);
+                            var new_cell = Jupyter.notebook.get_selected_cell();
+                            if (json["aprobo"]) {
+                                new_cell.set_text("Respondiste bien");
+                            } else {
+                                new_cell.set_text("Respondiste mal");
+                            }
+                        }
+                };
+            
 
             //var dir = utils.url_path_join(that.base_url,'corrector');
             //console.log(dir);
 
-            $.ajax({
+      /*      $.ajax({
                 url: "http://localhost:8888/corrector",
                 type: 'post',
                 data: datos,
@@ -124,8 +154,8 @@ define([
                             }
                             
                         }
-            });
-
+            });*/
+            ajax(url, settings);
 
 			// var index = Jupyter.notebook.get_selected_index();
 			// Jupyter.notebook.insert_cell_below('code');
