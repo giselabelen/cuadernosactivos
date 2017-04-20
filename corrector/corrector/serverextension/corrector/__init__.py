@@ -39,6 +39,10 @@ class CorrectorHandler(IPythonHandler):
 
         # print("Listo")
 
+        usuario = self.get_current_user()
+        print(usuario)
+
+
         request = httpclient.HTTPRequest(destination, body=self.request.body, method='POST')
         response = yield http_client.fetch(request)
         print(response.body)
