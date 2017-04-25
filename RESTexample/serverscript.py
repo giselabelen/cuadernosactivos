@@ -94,7 +94,7 @@ def main():
     verifyDatabase()
 
     app = Application()
-    app.listen(80)
+    app.listen(82)
     IOLoop.instance().start()
 
 if __name__ == '__main__':

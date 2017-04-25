@@ -20,7 +20,7 @@ class CorrectorHandler(IPythonHandler):
     @gen.coroutine
     def post(self):
         print("adentro")
-        destination = "http://localhost:80/corrector/"
+        destination = "http://localhost:82/corrector/"
         http_client = httpclient.AsyncHTTPClient()
 
         # print ("iniciando corrección")
