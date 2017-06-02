@@ -59,11 +59,11 @@ define([
         var prefix = 'my_extension';
         var action_name = 'nextex';
 
-        var full_action_name = Jupyter.actions.register(action, action_name, prefix); // returns 'my_extension:check'
+        var full_action_name = Jupyter.actions.register(action, action_name, prefix); // returns 'my_extension:nextex'
         Jupyter.toolbar.add_buttons_group([full_action_name]);
     }
 
     return {
-        load_ipython_extension: check_extension
+        load_ipython_extension: nextex_extension
     };
 });
