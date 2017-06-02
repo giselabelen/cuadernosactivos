@@ -11,44 +11,36 @@ define([
             var ajax = utils.ajax || $.ajax;
 
             var base_url = utils.get_body_data("baseUrl");
-            var url = utils.url_path_join(base_url,'corrector');
-
-            // Nombre del alumno ---- hardcodeado por ahora
-            var nombre = "pepe";
-
-            // Número de ejercicio ---- hardcodeado por ahora
-            var ejercicio = "1";
-
-            // Texto introducido por el alumno
-            var cell = Jupyter.notebook.get_selected_cell();
-            var text = cell.get_text();
+            var url = utils.url_path_join(base_url,'nextex');
 
             var settings = {
-                data : {
-                    "nombre" : nombre,
-                    "ejercicio" : ejercicio,
-                    "respuesta" : text
-                },
-                type : 'POST',
+                // data : {
+                //     "nombre" : nombre,
+                //     "ejercicio" : ejercicio,
+                //     "respuesta" : text
+                // },
+                // type : 'POST',
                 dataType: 'json',
                 success: function(json){
+                            /* CREAR NUEVA CELDA AL FINAL
+                             * HACER LTI LAUNCH
+                             * METER EN LA CELDA EL IFRAME CON EL URL DE PB
+                             * EJECUTAR LA CELDA
+                             */
                             console.log(json);
-                            var index = Jupyter.notebook.get_selected_index();
-                            Jupyter.notebook.insert_cell_below('raw');
-                            Jupyter.notebook.select(index+1,true);
-                            var new_cell = Jupyter.notebook.get_selected_cell();
-                            if (json["aprobo"]) {
-                                new_cell.set_text("Respondiste bien");
-                            } else {
-                                new_cell.set_text("Respondiste mal");
-                            }
-                        }
+                            var index = Jupyter.notebook.ncells();
+                            Jupyter.notebook.insert_cell_at_bottom('code');
+                            var new_cell = Juptyter.notebook.get_cell(index);
+
+                            var url_lti_launch = lti_launch();
+
+                            new_cell.set_text("%%html \n <iframe width="750" height="500" src=" + url_lti_launch + "></iframe>");
+                            new_cell.execute();
+
                 };
             
             ajax(url, settings);
         };
-
-/***************************************************************************************************************/
 
         var action = {
             icon: 'fa-plus-circle', // a font-awesome class used on buttons, etc
@@ -66,4 +58,5 @@ define([
     return {
         load_ipython_extension: nextex_extension
     };
+    
 });

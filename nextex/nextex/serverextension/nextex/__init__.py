@@ -6,19 +6,37 @@ import requests
 
 class NextExHandler(IPythonHandler):
 
-    @gen.coroutine
-    def post(self):
-        
+    # @gen.coroutine
+    # def post(self):
+
+    #     destination = "http://localhost:82/corrector/"
+    #     http_client = httpclient.AsyncHTTPClient()
+
+    #     usuario = self.get_current_user()
+    #     print(usuario)
+
+    #     request = httpclient.HTTPRequest(destination, body=self.request.body, method='POST')
+    #     response = yield http_client.fetch(request)
+    #     print(response.body)
+    #     self.write(response.body)
+
+
+    def get(self):  #FALTA TERMINAR, ESTO TODAVIA NO SIRVE
+
         destination = "http://localhost:82/corrector/"
-        http_client = httpclient.AsyncHTTPClient()
+        http_client = httpclient.HTTPClient()
 
         usuario = self.get_current_user()
         print(usuario)
+        
+        body = self.request.body #agregar usuario
 
-        request = httpclient.HTTPRequest(destination, body=self.request.body, method='POST')
+
+        request = httpclient.HTTPRequest(destination, body=body)
         response = yield http_client.fetch(request)
         print(response.body)
         self.write(response.body)
+
 
 
 def load_jupyter_server_extension(nb_server_app):
