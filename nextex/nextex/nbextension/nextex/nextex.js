@@ -21,7 +21,7 @@ define([
                 // },
                 // type : 'POST',
                 dataType: 'json',
-                success: function(json){
+                success: function(json){    // json -> deberia traer user y siguiente ejercicio (o algo que permita pedir el siguiente a PB)
                             /* CREAR NUEVA CELDA AL FINAL
                              * HACER LTI LAUNCH
                              * METER EN LA CELDA EL IFRAME CON EL URL DE PB
@@ -32,15 +32,16 @@ define([
                             Jupyter.notebook.insert_cell_at_bottom('code');
                             var new_cell = Juptyter.notebook.get_cell(index);
 
-                            var url_lti_launch = lti_launch();
+                            //var url_lti_launch = lti_launch();
 
-                            new_cell.set_text("%%html \n <iframe width="750" height="500" src=" + url_lti_launch + "></iframe>");
-                            new_cell.execute();
-
+                            //new_cell.set_text("%%html \n <iframe width="750" height="500" src=" + url_lti_launch + "></iframe>");
+                            //new_cell.execute();
+                        }
                 };
             
             ajax(url, settings);
-        };
+
+         };
 
         var action = {
             icon: 'fa-plus-circle', // a font-awesome class used on buttons, etc

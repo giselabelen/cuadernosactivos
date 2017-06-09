@@ -43,6 +43,25 @@ class CorrectorHandler(tornado.web.RequestHandler):
         print ("Listo")
 
 
+    def get(self):
+        print ("Analizando")
+        #print (json.loads(self.request.body))
+        #usuario = self.get_argument("usuario")
+        #usuario = json.loads(self.request.body)['usuario']
+
+        json_data = json.loads(self.request.body)
+        json_data["ejercicio"] = 1
+
+        
+        # por cross-domain
+        self.add_header("Access-Control-Allow-Origin","http://localhost:8888")
+        #self.write(self.request.body)   
+        self.write(json_data)
+
+        print ("Listo")
+
+
+
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [

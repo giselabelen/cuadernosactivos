@@ -3,6 +3,7 @@ from notebook.base.handlers import IPythonHandler
 from tornado import web, httpclient, gen
 
 import requests
+import json
 
 class NextExHandler(IPythonHandler):
 
@@ -21,22 +22,24 @@ class NextExHandler(IPythonHandler):
     #     self.write(response.body)
 
 
-    def get(self):  #FALTA TERMINAR, ESTO TODAVIA NO SIRVE
+    @gen.coroutine
+    def get(self):  
 
-        destination = "http://localhost:82/corrector/"
-        http_client = httpclient.HTTPClient()
+        destination = "http://localhost:82/corrector/"  # quedo nombre 'corrector' xq es el que usamos para la POC anterior
+        http_client = httpclient.AsyncHTTPClient()
 
         usuario = self.get_current_user()
         print(usuario)
         
-        body = self.request.body #agregar usuario
+        # body = self.request.body #agregar usuario
+        body = json.dumps({'usuario': usuario.decode()})
 
 
         request = httpclient.HTTPRequest(destination, body=body)
         response = yield http_client.fetch(request)
         print(response.body)
         self.write(response.body)
-
+        
 
 
 def load_jupyter_server_extension(nb_server_app):
