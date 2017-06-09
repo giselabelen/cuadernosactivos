@@ -1,6 +1,6 @@
 from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
-from tornado import web, httpclient, gen
+from tornado import web, httpclient, gen, httputil
 
 import requests
 import json
@@ -26,17 +26,19 @@ class NextExHandler(IPythonHandler):
     def get(self):  
 
         destination = "http://localhost:82/corrector/"  # quedo nombre 'corrector' xq es el que usamos para la POC anterior
-        http_client = httpclient.AsyncHTTPClient()
+        http_client = httpclient.HTTPClient()
 
         usuario = self.get_current_user()
         print(usuario)
         
         # body = self.request.body #agregar usuario
-        body = json.dumps({'usuario': usuario.decode()})
+        # body = json.dumps({'usuario': usuario.decode()})
+        params = {'usuario': usuario.decode()}
+        url = httputil.url_concat(destination,params)
+        print(url)
 
-
-        request = httpclient.HTTPRequest(destination, body=body)
-        response = yield http_client.fetch(request)
+        #request = httpclient.HTTPRequest(url)
+        response = http_client.fetch(url)
         print(response.body)
         self.write(response.body)
         

@@ -43,14 +43,16 @@ class CorrectorHandler(tornado.web.RequestHandler):
         print ("Listo")
 
 
-    def get(self):
+    def get(self):  
         print ("Analizando")
         #print (json.loads(self.request.body))
-        #usuario = self.get_argument("usuario")
+        usuario = self.get_argument("usuario")
+        print(usuario)
         #usuario = json.loads(self.request.body)['usuario']
 
-        json_data = json.loads(self.request.body)
-        json_data["ejercicio"] = 1
+        #json_data = json.loads(self.request.body)
+        #json_data["ejercicio"] = 1
+        json_data = {"usuario":usuario, "ejercicio": 1}
 
         
         # por cross-domain
