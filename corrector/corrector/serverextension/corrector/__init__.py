@@ -23,7 +23,7 @@ class CorrectorHandler(IPythonHandler):
         destination = "http://localhost:82/corrector/"
         http_client = httpclient.AsyncHTTPClient()
 
-        # print ("iniciando corrección")
+        # print ("iniciando correccion")
 
         # nombre = self.get_argument("nombre")
         # ejercicio = self.get_argument("ejercicio")

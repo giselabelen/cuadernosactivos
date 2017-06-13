@@ -1,8 +1,10 @@
 define([
     'base/js/namespace',
     'base/js/utils',
+    './oauth-1.0a',
+    './hmac-sha1'
 ], function(
-    Jupyter, utils
+    Jupyter, utils, oauth, hmac
 ) {
     function nextex_extension() {
 
@@ -30,15 +32,15 @@ define([
                             
                             var index = Jupyter.notebook.ncells();
                             Jupyter.notebook.insert_cell_at_bottom('raw');
+                            var new_cell = Jupyter.notebook.get_cell(index);
                             console.log(json);
-                            var new_cell = Juptyter.notebook.get_cell(index);   // <-- ACA HAY PROBLEMAS --- REVISAR!!!!!
+                            //new_cell.set_text(JSON.stringify(json));
+                            var url_lti_launch = lti_launch(json);
                             
-                            // var url_lti_launch = lti_launch(json);
-                            // console.log("estoy por setear el texto");
-                            // new_cell.set_text(url_lti_launch);
-
+                            new_cell.set_text(url_lti_launch);
+                            
                             //new_cell.set_text("%%html \n <iframe width="750" height="500" src=" + url_lti_launch + "></iframe>");
-                            //new_cell.execute();
+                            new_cell.execute();
                         }
                 };
             
@@ -59,39 +61,41 @@ define([
         Jupyter.toolbar.add_buttons_group([full_action_name]);
     };
 
-    //function lti_launch(json){
+    function lti_launch(json){
 
-        // var oauth = OAuth({
-        //     consumer: {
-        //         key: 'notebook',
-        //         secret: 'sarasa'
-        //     },
-        //     signature_method: 'HMAC-SHA1',
-        //     hash_function: function(base_string, key) {
-        //         return CryptoJS.HmacSHA1(base_string, key).toString(CryptoJS.enc.Base64);
-        //     }
-        // });
+        //var OAuth = require('./oauth-1.0a')
 
-        // var request_data = {
-        //     url: 'urlDePilasBloques',
-        //     method: 'POST',
-        //     data: {
-        //         lti_version : 'LTI-1p0',
-        //         lti_message_type: 'basic-lti-launch-request',
-        //         resource_link_id : 1
-        //     }
-        // };
+        var oauth = OAuth({
+            consumer: {
+                key: 'notebook',
+                secret: 'sarasa'
+            },
+            signature_method: 'HMAC-SHA1',
+            hash_function: function(base_string, key) {
+                return CryptoJS.HmacSHA1(base_string, key).toString(CryptoJS.enc.Base64);
+            }
+        });
 
-        // $.ajax({
-        //     url: request_data.url,
-        //     type: request_data.method,
-        //     data: oauth.authorize(request_data, token)
-        // }).done(function(data) {
-        //     //process your data here
-        // });
+        var request_data = {
+            url: 'http://lti.tools/test/tp.php', // ver bien como testear esto
+            method: 'POST',
+            data: {
+                lti_version : 'LTI-1p0',
+                lti_message_type: 'basic-lti-launch-request',
+                resource_link_id : 1
+            }
+        };
+
+        $.ajax({
+            url: request_data.url,
+            type: request_data.method,
+            data: oauth.authorize(request_data)
+        }).done(function(data) {
+            console.log(data)
+        });
     //     console.log("entre a la funcion");
-    //     return json;
-    // };
+         return JSON.stringify(json);
+    };
 
     return {
         load_ipython_extension: nextex_extension
