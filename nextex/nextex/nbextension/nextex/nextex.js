@@ -61,14 +61,14 @@ define([
         Jupyter.toolbar.add_buttons_group([full_action_name]);
     };
 
-    function lti_launch(json){
 
+    function lti_launch(json){
         //var OAuth = require('./oauth-1.0a')
 
         var oauth = OAuth({
             consumer: {
-                key: 'notebook',
-                secret: 'sarasa'
+                key: 'none',
+                secret: 'none'
             },
             signature_method: 'HMAC-SHA1',
             hash_function: function(base_string, key) {
@@ -77,24 +77,63 @@ define([
         });
 
         var request_data = {
-            url: 'http://lti.tools/test/tp.php', // ver bien como testear esto
+            url: 'https://www.edu-apps.org/tool_redirect?id=educreations', // ver bien como testear esto
             method: 'POST',
             data: {
                 lti_version : 'LTI-1p0',
                 lti_message_type: 'basic-lti-launch-request',
-                resource_link_id : 1
+                resource_link_id : 429785226
             }
         };
 
-        $.ajax({
-            url: request_data.url,
-            type: request_data.method,
-            data: oauth.authorize(request_data)
-        }).done(function(data) {
-            console.log(data)
-        });
+        // $.ajax({
+        //     url: request_data.url,
+        //     type: request_data.method,
+        //     data: oauth.authorize(request_data)
+        // }).done(function(data) {
+        //     console.log(data)
+        // });
+
+        var url = request_data.url;
+        var type = request_data.method;
+        var data = oauth.authorize(request_data);
+
+        return submitFORM(url,data,type);
     //     console.log("entre a la funcion");
-         return JSON.stringify(json);
+    //     return JSON.stringify(json);
+    };
+
+    function submitFORM(path, params, method) {
+        method = method || "post"; 
+
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+        form.setAttribute("action", path);
+
+        //Move the submit function to another variable
+        //so that it doesn't get overwritten.
+        form._submit_function_ = form.submit;
+
+        for(var key in params) {
+            if(params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                hiddenField.setAttribute("value", params[key]);
+
+                form.appendChild(hiddenField);
+             }
+        }
+
+        document.body.appendChild(form);
+
+        var respuesta;
+
+        form._submit_function_(function(data){
+            respuesta = data;
+        });
+
+        return respuesta;
     };
 
     return {
