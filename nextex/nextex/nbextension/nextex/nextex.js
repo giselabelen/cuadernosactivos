@@ -31,13 +31,16 @@ define([
                              */
                             
                             var index = Jupyter.notebook.ncells();
-                            Jupyter.notebook.insert_cell_at_bottom('raw');
+                            Jupyter.notebook.insert_cell_at_bottom('code');
                             var new_cell = Jupyter.notebook.get_cell(index);
                             console.log(json);
                             //new_cell.set_text(JSON.stringify(json));
-                            var url_lti_launch = lti_launch(json);
+
+                            new_cell.set_text("%%html \n <div id=\"ltiLaunchFormSubmitArea\"></div>");
+                            new_cell.execute();
+                            lti_launch(json);
                             
-                            new_cell.set_text(url_lti_launch);
+                            //new_cell.set_text(url_lti_launch);
                             
                             //new_cell.set_text("%%html \n <iframe width="750" height="500" src=" + url_lti_launch + "></iframe>");
                             new_cell.execute();
@@ -67,8 +70,8 @@ define([
 
         var oauth = OAuth({
             consumer: {
-                key: 'none',
-                secret: 'none'
+                key: 'jisc.ac.uk',
+                secret: 'secret'
             },
             signature_method: 'HMAC-SHA1',
             hash_function: function(base_string, key) {
@@ -77,7 +80,7 @@ define([
         });
 
         var request_data = {
-            url: 'https://www.edu-apps.org/tool_redirect?id=educreations', // ver bien como testear esto
+            url: 'https://lti.tools/test/tp.php', // ver bien como testear esto
             method: 'POST',
             data: {
                 lti_version : 'LTI-1p0',
@@ -98,42 +101,53 @@ define([
         var type = request_data.method;
         var data = oauth.authorize(request_data);
 
-        return submitFORM(url,data,type);
+        submitFORM(url,data,type);
     //     console.log("entre a la funcion");
     //     return JSON.stringify(json);
     };
 
     function submitFORM(path, params, method) {
-        method = method || "post"; 
+        // method = method || "post"; 
 
-        var form = document.createElement("form");
-        form.setAttribute("method", method);
-        form.setAttribute("action", path);
+        // //var div_launch = document.createElement("div");
+        // //div_form.id = "ltiLaunchFormSubmitArea";
 
-        //Move the submit function to another variable
-        //so that it doesn't get overwritten.
-        form._submit_function_ = form.submit;
+        // var form = document.createElement("form");
+        // form.setAttribute("method", method);
+        // form.setAttribute("action", path);
+        // form.setAttribute("target", "basicLtiLaunchFrame");
 
-        for(var key in params) {
-            if(params.hasOwnProperty(key)) {
-                var hiddenField = document.createElement("input");
-                hiddenField.setAttribute("type", "hidden");
-                hiddenField.setAttribute("name", key);
-                hiddenField.setAttribute("value", params[key]);
+        // //Move the submit function to another variable
+        // //so that it doesn't get overwritten.
+        // form._submit_function_ = form.submit;
 
-                form.appendChild(hiddenField);
-             }
-        }
+        // document.getElementById("ltiLaunchFormSubmitArea").appendChild(form);
+        var div = document.createElement("div");
+        div.innerHTML = "jdflaasf";
+        document.getElementById("ltiLaunchFormSubmitArea").appendChild(div);
 
-        document.body.appendChild(form);
+        // var iframe = document.createElement("iframe");
+        // iframe.name = "basicLtiLaunchFrame";
+        // iframe.id = "basicLtiLaunchFrame";
 
-        var respuesta;
+        // document.getElementById("ltiLaunchFormSubmitArea").appendChild(iframe);
 
-        form._submit_function_(function(data){
-            respuesta = data;
-        });
+        // for(var key in params) {
+        //     if(params.hasOwnProperty(key)) {
+        //         var hiddenField = document.createElement("input");
+        //         hiddenField.setAttribute("type", "hidden");
+        //         hiddenField.setAttribute("name", key);
+        //         hiddenField.setAttribute("value", params[key]);
 
-        return respuesta;
+        //         form.appendChild(hiddenField);
+        //      }
+        // }
+
+        // //document.body.appendChild(div_launch);
+
+        // //var respuesta;
+
+        // form._submit_function_();
     };
 
     return {
