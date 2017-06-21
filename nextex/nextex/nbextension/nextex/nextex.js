@@ -2,9 +2,10 @@ define([
     'base/js/namespace',
     'base/js/utils',
     './oauth-1.0a',
-    './hmac-sha1'
+    './hmac-sha1',
+    './enc-base64-min'
 ], function(
-    Jupyter, utils, oauth, hmac
+    Jupyter, utils, oauth, hmac, b64
 ) {
     function nextex_extension() {
 
@@ -24,26 +25,9 @@ define([
                 // type : 'POST',
                 dataType: 'json',
                 success: function(json){    // json -> deberia traer user y siguiente ejercicio (o algo que permita pedir el siguiente a PB)
-                            /* CREAR NUEVA CELDA AL FINAL
-                             * HACER LTI LAUNCH
-                             * METER EN LA CELDA EL IFRAME CON EL URL DE PB
-                             * EJECUTAR LA CELDA
-                             */
-                            
-                            var index = Jupyter.notebook.ncells();
-                            Jupyter.notebook.insert_cell_at_bottom('code');
-                            var new_cell = Jupyter.notebook.get_cell(index);
-                            console.log(json);
-                            //new_cell.set_text(JSON.stringify(json));
-
-                            new_cell.set_text("%%html \n <div id=\"ltiLaunchFormSubmitArea\"></div>");
-                            new_cell.execute();
+                                              
                             lti_launch(json);
                             
-                            //new_cell.set_text(url_lti_launch);
-                            
-                            //new_cell.set_text("%%html \n <iframe width="750" height="500" src=" + url_lti_launch + "></iframe>");
-                            new_cell.execute();
                         }
                 };
             
@@ -70,7 +54,7 @@ define([
 
         var oauth = OAuth({
             consumer: {
-                key: 'jisc.ac.uk',
+                key: '12345',
                 secret: 'secret'
             },
             signature_method: 'HMAC-SHA1',
@@ -80,7 +64,7 @@ define([
         });
 
         var request_data = {
-            url: 'https://lti.tools/test/tp.php', // ver bien como testear esto
+            url: 'https://online.dr-chuck.com/sakai-api-test/tool.php', // ver bien como testear esto
             method: 'POST',
             data: {
                 lti_version : 'LTI-1p0',
@@ -89,65 +73,58 @@ define([
             }
         };
 
-        // $.ajax({
-        //     url: request_data.url,
-        //     type: request_data.method,
-        //     data: oauth.authorize(request_data)
-        // }).done(function(data) {
-        //     console.log(data)
-        // });
-
         var url = request_data.url;
         var type = request_data.method;
         var data = oauth.authorize(request_data);
+        console.log(data);
 
         submitFORM(url,data,type);
-    //     console.log("entre a la funcion");
-    //     return JSON.stringify(json);
     };
 
     function submitFORM(path, params, method) {
-        // method = method || "post"; 
+        var index = Jupyter.notebook.ncells();
+        Jupyter.notebook.insert_cell_at_bottom('code');
+        var new_cell = Jupyter.notebook.get_cell(index);
 
-        // //var div_launch = document.createElement("div");
-        // //div_form.id = "ltiLaunchFormSubmitArea";
+        method = method || "post"; 
 
-        // var form = document.createElement("form");
-        // form.setAttribute("method", method);
-        // form.setAttribute("action", path);
-        // form.setAttribute("target", "basicLtiLaunchFrame");
+        var div_launch = document.createElement("div");
 
-        // //Move the submit function to another variable
-        // //so that it doesn't get overwritten.
-        // form._submit_function_ = form.submit;
+        // creo el form
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+        form.setAttribute("action", path);
+        form.setAttribute("target", "basicLtiLaunchFrame");
+        form.setAttribute("width", 750);
+        form.setAttribute("height", 500);
+        form.id = "basicLtiLaunchFrame";
+        div_launch.appendChild(form);
+        
+        // creo el iframe
+        var iframe = document.createElement("iframe");
+        iframe.name = "basicLtiLaunchFrame";
+        iframe.id = "basicLtiLaunchFrame";
+        div_launch.appendChild(iframe);
 
-        // document.getElementById("ltiLaunchFormSubmitArea").appendChild(form);
-        var div = document.createElement("div");
-        div.innerHTML = "jdflaasf";
-        document.getElementById("ltiLaunchFormSubmitArea").appendChild(div);
 
-        // var iframe = document.createElement("iframe");
-        // iframe.name = "basicLtiLaunchFrame";
-        // iframe.id = "basicLtiLaunchFrame";
+        for(var key in params) {
+            if(params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                hiddenField.setAttribute("value", params[key]);
 
-        // document.getElementById("ltiLaunchFormSubmitArea").appendChild(iframe);
+                form.appendChild(hiddenField);
+             }
+        }
 
-        // for(var key in params) {
-        //     if(params.hasOwnProperty(key)) {
-        //         var hiddenField = document.createElement("input");
-        //         hiddenField.setAttribute("type", "hidden");
-        //         hiddenField.setAttribute("name", key);
-        //         hiddenField.setAttribute("value", params[key]);
+        // script que hace el submit
+        var script = document.createElement("script");
+        script.appendChild(document.createTextNode("document.getElementById(\"basicLtiLaunchFrame\").submit()"));
+        div_launch.appendChild(script);
 
-        //         form.appendChild(hiddenField);
-        //      }
-        // }
-
-        // //document.body.appendChild(div_launch);
-
-        // //var respuesta;
-
-        // form._submit_function_();
+        new_cell.set_text("%%html \n" + div_launch.innerHTML);
+        new_cell.execute();
     };
 
     return {
