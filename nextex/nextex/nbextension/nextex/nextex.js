@@ -54,8 +54,8 @@ define([
 
         var oauth = OAuth({
             consumer: {
-                key: '12345',
-                secret: 'secret'
+                key: '__consumer_key__',
+                secret: '__lti_secret__'
             },
             signature_method: 'HMAC-SHA1',
             hash_function: function(base_string, key) {
@@ -64,12 +64,13 @@ define([
         });
 
         var request_data = {
-            url: 'https://online.dr-chuck.com/sakai-api-test/tool.php', // ver bien como testear esto
+            url: 'http://0.0.0.0:5000/index/', // ver bien como testear esto
             method: 'POST',
             data: {
                 lti_version : 'LTI-1p0',
                 lti_message_type: 'basic-lti-launch-request',
-                resource_link_id : 429785226
+                resource_link_id : 429785226,
+                user_id : 'pepe'
             }
         };
 
