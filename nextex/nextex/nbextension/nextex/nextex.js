@@ -17,22 +17,14 @@ define([
             var url = utils.url_path_join(base_url,'nextex');
 
             var settings = {
-                // data : {
-                //     "nombre" : nombre,
-                //     "ejercicio" : ejercicio,
-                //     "respuesta" : text
-                // },
-                // type : 'POST',
                 dataType: 'json',
-                success: function(json){    // json -> deberia traer user y siguiente ejercicio (o algo que permita pedir el siguiente a PB)
-                                              
+                success: function(json){    
+                            // json -> deberia traer user y siguiente ejercicio (o algo que permita pedir el siguiente a PB)
                             lti_launch(json);
-                            
                         }
                 };
             
             ajax(url, settings);
-
          };
 
         var action = {
@@ -50,8 +42,6 @@ define([
 
 
     function lti_launch(json){
-        //var OAuth = require('./oauth-1.0a')
-
         var oauth = OAuth({
             consumer: {
                 key: '__consumer_key__',
@@ -64,13 +54,13 @@ define([
         });
 
         var request_data = {
-            url: 'http://0.0.0.0:5000/index/', // ver bien como testear esto
+            url: 'http://0.0.0.0:5000/lti/',
             method: 'POST',
             data: {
                 lti_version : 'LTI-1p0',
                 lti_message_type: 'basic-lti-launch-request',
                 resource_link_id : 429785226,
-                user_id : 'pepe'
+                //user_id : 'pepe'
             }
         };
 
@@ -96,13 +86,13 @@ define([
         form.setAttribute("method", method);
         form.setAttribute("action", path);
         form.setAttribute("target", "basicLtiLaunchFrame");
-        form.setAttribute("width", 750);
-        form.setAttribute("height", 500);
         form.id = "basicLtiLaunchFrame";
         div_launch.appendChild(form);
         
         // creo el iframe
         var iframe = document.createElement("iframe");
+        iframe.setAttribute("width", 750);
+        iframe.setAttribute("height", 500);
         iframe.name = "basicLtiLaunchFrame";
         iframe.id = "basicLtiLaunchFrame";
         div_launch.appendChild(iframe);
@@ -124,8 +114,10 @@ define([
         script.appendChild(document.createTextNode("document.getElementById(\"basicLtiLaunchFrame\").submit()"));
         div_launch.appendChild(script);
 
+        // meto el launch en una celda, ejecuto y oculto el input para que solo se vea el iframe
         new_cell.set_text("%%html \n" + div_launch.innerHTML);
         new_cell.execute();
+        new_cell.element.find("div.input").toggle();
     };
 
     return {
