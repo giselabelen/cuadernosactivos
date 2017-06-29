@@ -115,9 +115,11 @@ define([
         div_launch.appendChild(script);
 
         // meto el launch en una celda, ejecuto y oculto el input para que solo se vea el iframe
+        // requiere tener el nbextension hide_input para que se persista
         new_cell.set_text("%%html \n" + div_launch.innerHTML);
         new_cell.execute();
         new_cell.element.find("div.input").toggle();
+        new_cell.metadata.hide_input = ! new_cell.metadata.hide_input;
     };
 
     return {
