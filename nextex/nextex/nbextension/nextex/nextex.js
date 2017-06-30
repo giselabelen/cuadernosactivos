@@ -21,6 +21,7 @@ define([
                 success: function(json){    
                             // json -> deberia traer user y siguiente ejercicio (o algo que permita pedir el siguiente a PB)
                             lti_launch(json);
+                            Jupyter.notebook.scroll_to_bottom();
                         }
                 };
             
