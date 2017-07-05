@@ -45,8 +45,8 @@ define([
     function lti_launch(json){
         var oauth = OAuth({
             consumer: {
-                key: '__consumer_key__',
-                secret: '__lti_secret__'
+                key: 'otrakey',//'12345',
+                secret: 'estesecret'//'secret'
             },
             signature_method: 'HMAC-SHA1',
             hash_function: function(base_string, key) {
@@ -55,12 +55,14 @@ define([
         });
 
         var request_data = {
-            url: 'http://0.0.0.0:5000/lti/',
+            url: 'http://0.0.0.0:5000/lti/',//https://online.dr-chuck.com/sakai-api-test/tool.php',
             method: 'POST',
             data: {
                 lti_version : 'LTI-1p0',
                 lti_message_type: 'basic-lti-launch-request',
-                resource_link_id : 429785226,
+                lis_outcome_service_url: 'http://localhost:82/outcomes/',
+                lis_result_sourcedid: 'lala'
+                //resource_link_id : 429785226,
                 //user_id : 'pepe'
             }
         };
