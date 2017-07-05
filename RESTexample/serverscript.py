@@ -4,6 +4,7 @@ from tornado.ioloop import IOLoop
 import sqlite3 as sqlite
 import tornado.web
 import json
+#import xmltodict
 
 
 class CorrectorHandler(tornado.web.RequestHandler):
@@ -63,11 +64,46 @@ class CorrectorHandler(tornado.web.RequestHandler):
         print ("Listo")
 
 
+class OutcomesHandler(tornado.web.RequestHandler):
+
+    def post(self):
+        print ("Obteniendo datos")
+        print (self.request.body)
+        data = tornado.escape.xhtml_escape(self.request.body)
+        print (data)
+        # tipo = self.get_argument("lti_message_type")
+        # sourcedid = self.get_argument("sourcedid")
+        # score = self.get_argument("result_resultscore_textstring")
+        
+        tipo = data[0]
+        sourcedid = data[1]
+        score = data[2]
+
+        print ("tipo:"+tipo)
+        print ("sourcedid:"+sourcedid)
+        print ("score:"+score)
+
+        # print ("Guardando datos")
+        # _execute("INSERT INTO resultados (nombre,ejercicio,respuesta) VALUES ('{0}','{1}','{2}')".format(nombre,ejercicio,respuesta))
+
+        # print ("Evaluando respuesta")
+        # if respuesta == "1":
+        #     correccion = {"aprobo":True}
+        # else:
+        #     correccion = {"aprobo":False}
+
+        # por cross-domain
+#        self.add_header("Access-Control-Allow-Origin","http://localhost:8888")
+#        self.write(correccion)   
+
+        print ("Listo")
+
 
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
-            (r"/corrector/?", CorrectorHandler)
+            (r"/corrector/?", CorrectorHandler),
+            (r"/outcomes/?", OutcomesHandler)
         ]
         tornado.web.Application.__init__(self, handlers)
 
