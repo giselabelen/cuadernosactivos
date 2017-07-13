@@ -5,7 +5,7 @@ import sqlite3 as sqlite
 import tornado.web
 import json
 #import xmltodict
-
+from xml.etree import ElementTree as etree
 
 class CorrectorHandler(tornado.web.RequestHandler):
     # def prepare(self):
@@ -68,20 +68,48 @@ class OutcomesHandler(tornado.web.RequestHandler):
 
     def post(self):
         print ("Obteniendo datos")
-        print (self.request.body)
-        data = tornado.escape.xhtml_escape(self.request.body)
-        print (data)
+        # print (self.request.body)   
+
+        root = etree.Element(u'imsx_POXEnvelopeResponse',
+                         xmlns=u'http://www.imsglobal.org/services/'
+                               u'ltiv1p1/xsd/imsoms_v1p0')
+
+        header = etree.SubElement(root, 'imsx_POXHeader')
+        header_info = etree.SubElement(header, 'imsx_POXResponseHeaderInfo')
+        version = etree.SubElement(header_info, 'imsx_version')
+        version.text = 'V1.0'
+        # message_identifier = etree.SubElement(header_info,
+        #                                       'imsx_messageIdentifier')
+        # message_identifier.text = message_identifier_id
+        status_info = etree.SubElement(header_info,'imsx_statusInfo')
+        code_major = etree.SubElement(status_info,'imsx_codeMajor')
+        code_major.text = 'success'
+        severity = etree.SubElement(status_info,'imsx_severity')
+        severity.text = 'status'
+        #message_ref_identifier = etree.SubElement(status_info,'imsx_messageRefIdentifier')
+        operation_ref_identifier = etree.SubElement(status_info,'imsx_operationRefIdentifier')
+        operation_ref_identifier.text = 'replaceResult'
+
+        body = etree.SubElement(root, 'imsx_POXBody')
+        replace_result_response = etree.SubElement(body, 'replaceResultResponse')
+
+        ret = "<?xml version='1.0' encoding='utf-8'?>\n{}".format(
+            etree.tostring(root, encoding='utf-8'))
+
+        print("XML Response: \n%s", ret)
+        #return ret
+
         # tipo = self.get_argument("lti_message_type")
         # sourcedid = self.get_argument("sourcedid")
         # score = self.get_argument("result_resultscore_textstring")
         
-        tipo = data[0]
-        sourcedid = data[1]
-        score = data[2]
+        # tipo = data[0]
+        # sourcedid = data[1]
+        # score = data[2]
 
-        print ("tipo:"+tipo)
-        print ("sourcedid:"+sourcedid)
-        print ("score:"+score)
+        # print ("tipo:"+tipo)
+        # print ("sourcedid:"+sourcedid)
+        # print ("score:"+score)
 
         # print ("Guardando datos")
         # _execute("INSERT INTO resultados (nombre,ejercicio,respuesta) VALUES ('{0}','{1}','{2}')".format(nombre,ejercicio,respuesta))
@@ -94,7 +122,8 @@ class OutcomesHandler(tornado.web.RequestHandler):
 
         # por cross-domain
 #        self.add_header("Access-Control-Allow-Origin","http://localhost:8888")
-#        self.write(correccion)   
+        self.write(ret)   
+        self.set_header('Content-Type', 'text/xml')
 
         print ("Listo")
 

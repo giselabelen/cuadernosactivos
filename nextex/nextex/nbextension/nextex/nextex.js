@@ -45,9 +45,13 @@ define([
     function lti_launch(json){
         var oauth = OAuth({
             consumer: {
-                key: 'otrakey',//'12345',
-                secret: 'estesecret'//'secret'
+                key: 'otrakey',
+                secret: 'estesecret'
             },
+            // consumer: {
+            //     key: '12345',
+            //     secret: 'secret'
+            // },
             signature_method: 'HMAC-SHA1',
             hash_function: function(base_string, key) {
                 return CryptoJS.HmacSHA1(base_string, key).toString(CryptoJS.enc.Base64);
@@ -55,7 +59,8 @@ define([
         });
 
         var request_data = {
-            url: 'http://0.0.0.0:5000/lti/',//https://online.dr-chuck.com/sakai-api-test/tool.php',
+            url: 'http://0.0.0.0:5000/lti/',
+            //url: 'https://online.dr-chuck.com/sakai-api-test/tool.php',
             method: 'POST',
             data: {
                 lti_version : 'LTI-1p0',
