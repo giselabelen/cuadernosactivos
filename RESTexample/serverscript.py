@@ -7,7 +7,21 @@ import json
 #import xmltodict
 from xml.etree import ElementTree as etree
 
-class CorrectorHandler(tornado.web.RequestHandler):
+class BaseHandler(tornado.web.RequestHandler):
+
+    def set_default_headers(self):
+        print("setting headers!!!")
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "Authorization, content-type")
+        self.set_header('Access-Control-Allow-Methods', 'OPTIONS')
+
+    def options(self):
+        # no body
+        self.set_status(204)
+        self.finish()
+
+
+class CorrectorHandler(BaseHandler):
     # def prepare(self):
     #     if self.request.headers["Content-Type"].startswith("application/json"):
     #         print('if')
@@ -38,7 +52,7 @@ class CorrectorHandler(tornado.web.RequestHandler):
             correccion = {"aprobo":False}
 
         # por cross-domain
-        self.add_header("Access-Control-Allow-Origin","http://localhost:8888")
+        #self.add_header("Access-Control-Allow-Origin","*")
         self.write(correccion)   
 
         print ("Listo")
@@ -64,7 +78,7 @@ class CorrectorHandler(tornado.web.RequestHandler):
         print ("Listo")
 
 
-class OutcomesHandler(tornado.web.RequestHandler):
+class OutcomesHandler(BaseHandler):
 
     def post(self):
         print ("Obteniendo datos")
@@ -127,7 +141,7 @@ class OutcomesHandler(tornado.web.RequestHandler):
         # nuestra respuesta
         xml_response = armar_xml(code_major,severity,req_msg_id,req_oper)
 
-        # print ("Guardando datos")
+        #print ("Guardando datos")
         # _execute("INSERT INTO resultados (nombre,ejercicio,respuesta) VALUES ('{0}','{1}','{2}')".format(nombre,ejercicio,respuesta))
 
         self.write(xml_response)   
