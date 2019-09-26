@@ -59,8 +59,10 @@ define([
         });
 
         var request_data = {
+            //url: 'http://pilasbloques-staging.sadosky.net:5001/lti/',
             url: 'http://0.0.0.0:5000/lti/',
             //url: 'https://online.dr-chuck.com/sakai-api-test/tool.php',
+            //url: 'http://api.pilasbloques-staging.sadosky.net:8000/lti/',
             method: 'POST',
             data: {
                 lti_version : 'LTI-1p0',

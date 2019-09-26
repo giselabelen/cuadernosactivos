@@ -2,7 +2,7 @@ from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
 from tornado import web, httpclient, gen, httputil
 
-import requests
+# import request
 import json
 
 class NextExHandler(IPythonHandler):
