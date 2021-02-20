@@ -9,6 +9,7 @@ from datetime import datetime
 from sqlalchemy import func
 from sqlalchemy.orm import scoped_session, sessionmaker
 from models import * # import the engine to bind
+from xml.etree import ElementTree as etree
 
 
 
@@ -64,7 +65,7 @@ class SeguimientoHandler(BaseHandler):
         resolucion = data["resolucion"]
         timestamp = int(data["timestamp"])/1000
 
-        # cargo los datos de la actividad para este alumne
+        # cargo los datos de la actividad para este estudiante
         if (id_ejercicio != "0") & (id_guia != "0"):
             nuevaAct = ActividadPorAlumne(usuario=usuario,\
                                         timestamp=datetime.fromtimestamp(timestamp),\
@@ -248,6 +249,7 @@ class OutcomesHandler(BaseHandler):
                     code_major = 'faliure'
                 else:
                     # hacer lo correspondiente para guardar la nota
+                    print("el valor es ",val)
                     pass
             except ValueError:
                 code_major = "faliure"

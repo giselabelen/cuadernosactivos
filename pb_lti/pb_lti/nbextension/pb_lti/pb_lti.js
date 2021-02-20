@@ -32,7 +32,7 @@ define([
 /***************************************************************************************************************/
 
         var action = {
-            icon: 'fas fa-book-reader', // a font-awesome class used on buttons, etc
+            icon: 'fas fa-check', // a font-awesome class used on buttons, etc
             help    : 'caso pb con lti',
             //help_index : 'zz',
             handler : handler
