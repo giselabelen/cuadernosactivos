@@ -30,5 +30,14 @@ class ActividadPorAlumne(Base):
 	anotacion = Column(Text)		# anotacion opcional
 
 
+class DesempenioPBPorEstudiante(Base):
+	__tablename__ = 'desempenioPBPorEstudiante'
+
+	id = Column(Integer, primary_key=True)
+	usuario = Column(String(128))	# usuario (por ahora, el valor que toma jupyter)
+	id_ejercicio = Column(Integer)	# identificador del ejercicio de PB
+	outcome = Column(Float)			# resultado que devuelve PB
+
+
 def create_all():
     Base.metadata.create_all(engine)

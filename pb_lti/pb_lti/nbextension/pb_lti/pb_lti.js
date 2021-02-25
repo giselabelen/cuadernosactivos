@@ -72,9 +72,9 @@ define([
                 lti_version : 'LTI-1p0',
                 lti_message_type: 'basic-lti-launch-request',
                 lis_outcome_service_url: 'http://localhost:82/outcomes/',
-                lis_result_sourcedid: 'lala'
-                //resource_link_id : 429785226,
-                //user_id : 'pepe'
+                lis_result_sourcedid: json["identif"],
+                resource_link_id : json["ejercicio"],
+                user_id : json["usuario"]
             }
         };
 

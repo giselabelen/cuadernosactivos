@@ -177,12 +177,28 @@ class SeguimientoHandler(BaseHandler):
 class PBLTIHandler(BaseHandler):
 
     def get(self):  
-        # print ("Analizando")
         
+        # obtengo nombre de usuario
         usuario = self.get_argument("usuario")
-        # print(usuario)
+
+        # obtengo ejercicio (hardcodeado por ahora)
+        ejercicio = 1 
+
+        # obtengo id en la base de datos de notas para este usr y este ej
+        query = self.db().query(DesempenioPBPorEstudiante).\
+            filter(DesempenioPBPorEstudiante.usuario == usuario,\
+                    DesempenioPBPorEstudiante.id_ejercicio == ejercicio)
+
+        if (query.count()==1): # ya existe un registro para este usr-ej
+            identif = query.one().id
+        else:
+            nuevoRegistro = DesempenioPBPorEstudiante(usuario=usuario, id_ejercicio=ejercicio)
+            self.db().add(nuevoRegistro)
+            self.db().commit()
+            identif = nuevoRegistro.id
         
-        json_data = {"usuario":usuario, "ejercicio": 1}
+        # todo lo que voy a enviar para el lti launch
+        json_data = {"usuario":usuario, "ejercicio": ejercicio, "identif": identif}
 
         
         # # por cross-domain
@@ -248,17 +264,16 @@ class OutcomesHandler(BaseHandler):
                 if not (0 <= val <= 1.0):
                     code_major = 'faliure'
                 else:
-                    # hacer lo correspondiente para guardar la nota
-                    print("el valor es ",val)
+                    # guardo la nota
+                    entradaDesempenios = self.db().query(DesempenioPBPorEstudiante).get(req_sourcedid)
+                    entradaDesempenios.outcome = val
+                    self.db().commit()
                     pass
             except ValueError:
                 code_major = "faliure"
 
         # nuestra respuesta
         xml_response = armar_xml(code_major,severity,req_msg_id,req_oper)
-
-        #print ("Guardando datos")
-        # _execute("INSERT INTO resultados (nombre,ejercicio,respuesta) VALUES ('{0}','{1}','{2}')".format(nombre,ejercicio,respuesta))
 
         self.write(xml_response)   
         self.set_header('Content-Type', 'text/xml')
