@@ -16,10 +16,10 @@ define([
             var base_url = utils.get_body_data("baseUrl");
             var url = utils.url_path_join(base_url,'pb_lti');
 
+            // en la respuesta se indica usuario, desafio de PB e identificador para calificacion
             var settings = {
                 dataType: 'json',
                 success: function(json){    
-                            // json -> deberia traer user y siguiente ejercicio (o algo que permita pedir el siguiente a PB)
                             lti_launch(json);
                             Jupyter.notebook.scroll_to_bottom();
                         }
@@ -32,7 +32,7 @@ define([
 /***************************************************************************************************************/
 
         var action = {
-            icon: 'fas fa-check', // a font-awesome class used on buttons, etc
+            icon: 'fas fa-check',
             help    : 'caso pb con lti',
             //help_index : 'zz',
             handler : handler
@@ -52,21 +52,14 @@ define([
                 key: 'otrakey',
                 secret: 'estesecret'
             },
-            // consumer: {
-            //     key: '12345',
-            //     secret: 'secret'
-            // },
             signature_method: 'HMAC-SHA1',
             hash_function: function(base_string, key) {
                 return CryptoJS.HmacSHA1(base_string, key).toString(CryptoJS.enc.Base64);
             }
-        });
+        }); // esto no deberia estar aca por razones de seguridad
 
         var request_data = {
-            //url: 'http://pilasbloques-staging.sadosky.net:5001/lti/',
-            url: 'http://0.0.0.0:5000/lti/',
-            //url: 'https://online.dr-chuck.com/sakai-api-test/tool.php',
-            //url: 'http://api.pilasbloques-staging.sadosky.net:8000/lti/',
+            url: 'http://0.0.0.0:5000/lti/', // PB corriendo local - mejorar
             method: 'POST',
             data: {
                 lti_version : 'LTI-1p0',

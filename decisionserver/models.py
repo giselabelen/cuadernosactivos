@@ -13,8 +13,8 @@ class EjercicioPorGuia(Base):
 
 	id_guia = Column(Integer, primary_key=True)		# numero de guia
 	id_ejercicio = Column(Integer,primary_key=True)	# numero de ejercicio de la guia
-	ejercicio = Column(Text)						# ejercicio propiamente dicho (ver si text es el tipo apropiado)
-	solucion = Column(Text)							# respuesta correcta al ejercicio (ver si text es el tipo apropiado)
+	ejercicio = Column(Text)						# ejercicio propiamente dicho
+	solucion = Column(Text)							# respuesta correcta al ejercicio
 	id_siguiente = Column(Integer)					# siguiente ejercicio de la guia
 
 

@@ -13,12 +13,12 @@ define([
             var base_url = utils.get_body_data("baseUrl");
             var url = utils.url_path_join(base_url,'seguimiento');
 
-            // leo de la metadata de la celda seleccionada y la solucion de le alumne
+            // leo de la metadata de la celda seleccionada y la solucion de le estudiante
             var cell = Jupyter.notebook.get_selected_cell();
             var id_guia = cell.metadata.id_guia;
             var id_ejercicio = cell.metadata.id_ejercicio;
             var resolucion = cell.get_text();
-            // envio sol actual y recibo ejercicio sig
+            // envio solucion actual y recibo ejercicio siguiente
             var settings = {
                 data : {
                     "id_guia" : id_guia,
@@ -71,7 +71,7 @@ define([
 /***************************************************************************************************************/
 
         var action = {
-            icon: 'fas fa-certificate', // a font-awesome class used on buttons, etc
+            icon: 'fas fa-certificate',
             help    : 'caso con seguimiento',
             //help_index : 'zz',
             handler : handler

@@ -2,10 +2,10 @@ from setuptools import setup
 
 setup(name='pb_lti',
       version='0.1',
-      description='prueba integracion pb con lti',
-      #url='http://github.com/storborg/funniest',
-      author='Gisela',
-      #author_email='flyingcircus@example.com',
-      #license='MIT',
+      description='POC integracion PB con LTI',
+      #url=,
+      author='Gisela Confalonieri',
+      #author_email=,
+      #license=,
       packages=['pb_lti'])
-      #zip_safe=False)
+      #zip_safe=)

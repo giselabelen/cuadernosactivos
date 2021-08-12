@@ -51,7 +51,7 @@ define([
 /***************************************************************************************************************/
 
         var action = {
-            icon: 'fas fa-bolt', // a font-awesome class used on buttons, etc
+            icon: 'fas fa-bolt',
             help    : 'caso adhoc',
             //help_index : 'zz',
             handler : handler

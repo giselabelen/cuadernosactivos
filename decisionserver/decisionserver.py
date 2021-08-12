@@ -1,5 +1,3 @@
-#from tornado import httpserver
-#from tornado import gen
 from tornado.ioloop import IOLoop
 import tornado.web
 import json
@@ -77,11 +75,6 @@ class SeguimientoHandler(BaseHandler):
                                 filter(ActividadPorAlumne.id_guia == id_guia,\
                                     ActividadPorAlumne.id_ejercicio == id_ejercicio,\
                                     ActividadPorAlumne.usuario == usuario)
-
-            # query = self.db().query(ActividadPorAlumne.anotacion, func.max(ActividadPorAlumne.anotacion)).\
-            # filter(ActividadPorAlumne.id_guia == id_guia,\
-            #     ActividadPorAlumne.id_ejercicio == id_ejercicio,\
-            #     ActividadPorAlumne.usuario == usuario)
 
             if (query.count()>0): # no es la primera vez que hace esta guia
                 nuevaAct.anotacion = int(max(query.all())._asdict()["anotacion"]) + 1   #esto se tiene que poder hacer mejor
@@ -200,13 +193,10 @@ class PBLTIHandler(BaseHandler):
         # todo lo que voy a enviar para el lti launch
         json_data = {"usuario":usuario, "ejercicio": ejercicio, "identif": identif}
 
-        
         # # por cross-domain
         # self.add_header("Access-Control-Allow-Origin","http://localhost:8888")
         
         self.write(json_data)
-
-        # print ("Listo")
 
 
 class OutcomesHandler(BaseHandler):
@@ -242,7 +232,7 @@ class OutcomesHandler(BaseHandler):
                 severity = 'status'
 
             else: # si no es read ni delete
-                req_oper = 'unknown' # esto podria ser mas declarativo... otro dia
+                req_oper = 'unknown' # esto podria ser mas declarativo
                 severity = 'error'
 
         else: # si era replaceResult
@@ -323,7 +313,6 @@ def armar_xml(code_major,severity,req_msg_id,req_oper):
     ret = "<?xml version='1.0' encoding='utf-8'?>\n{}".format(
         etree.tostring(root, encoding='utf-8'))
 
-    # print("XML Response: \n%s", ret)
     return ret
 
 
